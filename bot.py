@@ -14,6 +14,7 @@ from aiogram.types import ErrorEvent
 from config import load_config
 from database.engine import init_db
 from handlers import admin as admin_handlers
+from handlers import fallback as fallback_handlers
 from handlers import quiz as quiz_handlers
 from handlers import start as start_handlers
 from handlers import stats as stats_handlers
@@ -74,6 +75,7 @@ async def main() -> None:
     dp.include_router(quiz_handlers.router)
     dp.include_router(stats_handlers.router)
     dp.include_router(admin_handlers.router)
+    dp.include_router(fallback_handlers.router)  # завжди останній
     dp.errors.register(on_error)
 
     logger.info("Запуск бота...")
