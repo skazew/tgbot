@@ -23,7 +23,6 @@ CB_RATING_DISC = "rating_disc"
 @router.message(Command("stats"))
 @router.message(F.text == BTN_STATS)
 async def cmd_stats(message: Message) -> None:
-    """Вивести статистику користувача."""
     if message.from_user is None:
         return
     async with async_session() as session:
@@ -38,7 +37,6 @@ async def cmd_stats(message: Message) -> None:
 @router.message(F.text == BTN_RATING)
 @router.message(Command("rating"))
 async def cmd_rating(message: Message) -> None:
-    """Запропонувати обрати дисципліну для перегляду рейтингу."""
     async with async_session() as session:
         disciplines = await DisciplineRepository(session).list_active()
     if not disciplines:
@@ -52,7 +50,6 @@ async def cmd_rating(message: Message) -> None:
 
 @router.callback_query(F.data.startswith(f"{CB_RATING_DISC}:"))
 async def on_rating_discipline(call: CallbackQuery) -> None:
-    """Вивести топ-N користувачів за обраною дисципліною."""
     if call.data is None or call.message is None:
         await call.answer()
         return

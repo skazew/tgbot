@@ -35,7 +35,6 @@ HELP_TEXT = (
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
-    """Обробити /start: зареєструвати користувача і показати головне меню."""
     await state.clear()
     if message.from_user is None:
         return
@@ -60,13 +59,11 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
 @router.message(Command("help"))
 @router.message(F.text == BTN_HELP)
 async def cmd_help(message: Message) -> None:
-    """Вивести довідку."""
     await message.answer(HELP_TEXT)
 
 
 @router.message(Command("cancel"))
 async def cmd_cancel(message: Message, state: FSMContext) -> None:
-    """Скасувати поточний FSM-сценарій."""
     current = await state.get_state()
     await state.clear()
     if current is None:

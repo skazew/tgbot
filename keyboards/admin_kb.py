@@ -21,7 +21,6 @@ CB_Q_LIST = "q_list"
 
 
 def admin_main_kb() -> InlineKeyboardMarkup:
-    """Головне меню адміністратора."""
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="📚 Дисципліни", callback_data=CB_ADMIN_DISC)],
@@ -33,7 +32,6 @@ def admin_main_kb() -> InlineKeyboardMarkup:
 
 
 def disciplines_admin_kb() -> InlineKeyboardMarkup:
-    """Меню керування дисциплінами."""
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="➕ Створити", callback_data=CB_DISC_ADD)],
@@ -46,7 +44,6 @@ def disciplines_admin_kb() -> InlineKeyboardMarkup:
 
 
 def questions_admin_kb() -> InlineKeyboardMarkup:
-    """Меню керування питаннями."""
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="➕ Додати питання", callback_data=CB_Q_ADD)],
@@ -58,7 +55,6 @@ def questions_admin_kb() -> InlineKeyboardMarkup:
 def disciplines_pick_kb(
     disciplines: list[Discipline], action: str
 ) -> InlineKeyboardMarkup:
-    """Inline-клавіатура для вибору дисципліни в адмін-сценаріях."""
     rows = [
         [
             InlineKeyboardButton(
@@ -72,7 +68,6 @@ def disciplines_pick_kb(
 
 
 def correct_answer_kb(options_count: int) -> InlineKeyboardMarkup:
-    """Inline-клавіатура для вибору правильного варіанта (1..N)."""
     rows = [
         [
             InlineKeyboardButton(
@@ -85,7 +80,6 @@ def correct_answer_kb(options_count: int) -> InlineKeyboardMarkup:
 
 
 def add_more_answers_kb() -> InlineKeyboardMarkup:
-    """Inline-клавіатура для завершення введення варіантів відповідей."""
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="✅ Готово (обрати правильний)", callback_data="answers_done")]
@@ -99,7 +93,6 @@ def questions_page_kb(
     page: int,
     total_pages: int,
 ) -> InlineKeyboardMarkup:
-    """Inline-клавіатура зі сторінкою списку питань і навігацією."""
     rows: list[list[InlineKeyboardButton]] = []
     for q in questions:
         short = q.text if len(q.text) <= 40 else q.text[:37] + "…"
@@ -132,7 +125,6 @@ def questions_page_kb(
 
 
 def confirm_kb(yes_data: str, no_data: str) -> InlineKeyboardMarkup:
-    """Inline-клавіатура «Так / Ні» для підтвердження небезпечних дій."""
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [

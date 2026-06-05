@@ -12,7 +12,6 @@ from config import (
 
 @dataclass(frozen=True)
 class ValidationResult:
-    """Результат валідації: прапорець успіху та повідомлення про помилку."""
 
     is_valid: bool
     error: str | None = None
@@ -20,12 +19,10 @@ class ValidationResult:
 
 
 def _clean(text: str) -> str:
-    """Прибрати зайві пробіли по краях."""
     return (text or "").strip()
 
 
 def validate_question_text(text: str) -> ValidationResult:
-    """Валідація тексту питання: 1..MAX_QUESTION_TEXT_LEN символів."""
     cleaned = _clean(text)
     if not cleaned:
         return ValidationResult(False, "Текст питання не може бути порожнім.")
@@ -38,7 +35,6 @@ def validate_question_text(text: str) -> ValidationResult:
 
 
 def validate_answer_text(text: str) -> ValidationResult:
-    """Валідація тексту відповіді: 1..MAX_ANSWER_TEXT_LEN символів."""
     cleaned = _clean(text)
     if not cleaned:
         return ValidationResult(False, "Текст відповіді не може бути порожнім.")
@@ -51,7 +47,6 @@ def validate_answer_text(text: str) -> ValidationResult:
 
 
 def validate_discipline_name(text: str) -> ValidationResult:
-    """Валідація назви дисципліни."""
     cleaned = _clean(text)
     if not cleaned:
         return ValidationResult(False, "Назва дисципліни не може бути порожньою.")

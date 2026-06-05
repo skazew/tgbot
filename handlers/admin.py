@@ -68,7 +68,6 @@ _config = load_config()
 
 
 async def _is_admin(telegram_id: int) -> bool:
-    """Перевірити, чи має користувач права адміна."""
     if telegram_id in _config.admin_ids:
         return True
     async with async_session() as session:
@@ -76,7 +75,6 @@ async def _is_admin(telegram_id: int) -> bool:
 
 
 async def _guard(message_or_call: Message | CallbackQuery) -> bool:
-    """Заборонити доступ не-адмінам. Повернути True, якщо доступ дозволений."""
     user = message_or_call.from_user
     if user is None or not await _is_admin(user.id):
         if isinstance(message_or_call, CallbackQuery):
@@ -92,7 +90,6 @@ async def _guard(message_or_call: Message | CallbackQuery) -> bool:
 @router.message(Command("admin"))
 @router.message(F.text == BTN_ADMIN)
 async def cmd_admin(message: Message) -> None:
-    """Показати головне адмін-меню."""
     if not await _guard(message):
         return
     await message.answer("<b>Меню адміністратора</b>", reply_markup=admin_main_kb())
@@ -100,7 +97,6 @@ async def cmd_admin(message: Message) -> None:
 
 @router.callback_query(F.data == CB_ADMIN_DISC)
 async def cb_admin_disc(call: CallbackQuery) -> None:
-    """Меню керування дисциплінами."""
     if not await _guard(call):
         return
     await call.answer()
@@ -112,7 +108,6 @@ async def cb_admin_disc(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data == CB_ADMIN_QUESTIONS)
 async def cb_admin_questions(call: CallbackQuery) -> None:
-    """Меню керування питаннями."""
     if not await _guard(call):
         return
     await call.answer()
@@ -125,7 +120,6 @@ async def cb_admin_questions(call: CallbackQuery) -> None:
 @router.callback_query(F.data == CB_ADMIN_STATS)
 @router.message(Command("stats_all"))
 async def cmd_stats_all(event: Message | CallbackQuery) -> None:
-    """Зведена статистика по всіх користувачах."""
     if not await _guard(event):
         return
     async with async_session() as session:
@@ -142,7 +136,6 @@ async def cmd_stats_all(event: Message | CallbackQuery) -> None:
 @router.callback_query(F.data == CB_ADMIN_EXPORT)
 @router.message(Command("export"))
 async def cmd_export(event: Message | CallbackQuery) -> None:
-    """Згенерувати CSV з усіма спробами і надіслати документом."""
     if not await _guard(event):
         return
     async with async_session() as session:
@@ -170,7 +163,6 @@ async def cmd_export(event: Message | CallbackQuery) -> None:
 
 @router.callback_query(F.data == CB_DISC_ADD)
 async def cb_disc_add(call: CallbackQuery, state: FSMContext) -> None:
-    """Розпочати створення дисципліни."""
     if not await _guard(call):
         return
     await call.answer()
@@ -181,7 +173,6 @@ async def cb_disc_add(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.message(AddDisciplineStates.entering_name)
 async def on_disc_name(message: Message, state: FSMContext) -> None:
-    """Отримати назву і створити дисципліну."""
     result = validate_discipline_name(message.text or "")
     if not result.is_valid:
         await message.answer(f"{result.error}\nСпробуйте ще раз:")
@@ -206,7 +197,6 @@ async def on_disc_name(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data == CB_DISC_LIST)
 async def cb_disc_list(call: CallbackQuery) -> None:
-    """Показати список усіх дисциплін."""
     if not await _guard(call):
         return
     async with async_session() as session:
@@ -228,7 +218,6 @@ async def cb_disc_list(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data == CB_DISC_RENAME)
 async def cb_disc_rename(call: CallbackQuery, state: FSMContext) -> None:
-    """Обрати дисципліну для перейменування."""
     if not await _guard(call):
         return
     async with async_session() as session:
@@ -249,7 +238,6 @@ async def cb_disc_rename(call: CallbackQuery, state: FSMContext) -> None:
     RenameDisciplineStates.picking, F.data.startswith("disc_rename_pick:")
 )
 async def cb_disc_rename_pick(call: CallbackQuery, state: FSMContext) -> None:
-    """Запросити нову назву для обраної дисципліни."""
     if call.data is None:
         return
     discipline_id = int(call.data.split(":", 1)[1])
@@ -262,7 +250,6 @@ async def cb_disc_rename_pick(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.message(RenameDisciplineStates.entering_new_name)
 async def on_disc_new_name(message: Message, state: FSMContext) -> None:
-    """Зберегти нову назву."""
     result = validate_discipline_name(message.text or "")
     if not result.is_valid:
         await message.answer(f"{result.error}\nСпробуйте ще раз:")
@@ -286,7 +273,6 @@ async def on_disc_new_name(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data == CB_DISC_TOGGLE)
 async def cb_disc_toggle(call: CallbackQuery) -> None:
-    """Запропонувати перемкнути активність дисципліни."""
     if not await _guard(call):
         return
     async with async_session() as session:
@@ -304,7 +290,6 @@ async def cb_disc_toggle(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data.startswith("disc_toggle_pick:"))
 async def cb_disc_toggle_pick(call: CallbackQuery) -> None:
-    """Перемкнути is_active обраної дисципліни."""
     if not await _guard(call):
         return
     if call.data is None:
@@ -332,7 +317,6 @@ async def cb_disc_toggle_pick(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data == CB_DISC_DELETE)
 async def cb_disc_delete(call: CallbackQuery) -> None:
-    """Обрати дисципліну для видалення."""
     if not await _guard(call):
         return
     async with async_session() as session:
@@ -350,7 +334,6 @@ async def cb_disc_delete(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data.startswith("disc_delete_pick:"))
 async def cb_disc_delete_pick(call: CallbackQuery) -> None:
-    """Запит підтвердження видалення."""
     if not await _guard(call):
         return
     if call.data is None:
@@ -374,7 +357,6 @@ async def cb_disc_delete_pick(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data.startswith("disc_delete_yes:"))
 async def cb_disc_delete_yes(call: CallbackQuery) -> None:
-    """Підтвердити видалення."""
     if not await _guard(call):
         return
     if call.data is None:
@@ -397,7 +379,6 @@ async def cb_disc_delete_yes(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data == "disc_delete_no")
 async def cb_disc_delete_no(call: CallbackQuery) -> None:
-    """Скасувати видалення."""
     await call.answer("Скасовано")
     if call.message:
         await call.message.edit_text("Скасовано.", reply_markup=disciplines_admin_kb())
@@ -407,7 +388,6 @@ async def cb_disc_delete_no(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data == CB_Q_ADD)
 async def cb_q_add(call: CallbackQuery, state: FSMContext) -> None:
-    """Розпочати створення питання — обрати дисципліну."""
     if not await _guard(call):
         return
     async with async_session() as session:
@@ -428,7 +408,6 @@ async def cb_q_add(call: CallbackQuery, state: FSMContext) -> None:
     AddQuestionStates.picking_discipline, F.data.startswith("q_add_disc:")
 )
 async def on_q_add_disc(call: CallbackQuery, state: FSMContext) -> None:
-    """Зафіксувати дисципліну і запросити текст питання."""
     if call.data is None:
         return
     discipline_id = int(call.data.split(":", 1)[1])
@@ -441,7 +420,6 @@ async def on_q_add_disc(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.message(AddQuestionStates.entering_text)
 async def on_q_text(message: Message, state: FSMContext) -> None:
-    """Прийняти текст питання."""
     result = validate_question_text(message.text or "")
     if not result.is_valid:
         await message.answer(f"{result.error}\nСпробуйте ще раз:")
@@ -456,7 +434,6 @@ async def on_q_text(message: Message, state: FSMContext) -> None:
 
 @router.message(AddQuestionStates.entering_answer)
 async def on_q_answer(message: Message, state: FSMContext) -> None:
-    """Прийняти варіант відповіді."""
     result = validate_answer_text(message.text or "")
     if not result.is_valid:
         await message.answer(f"{result.error}\nСпробуйте ще раз:")
@@ -488,7 +465,6 @@ async def on_q_answer(message: Message, state: FSMContext) -> None:
     AddQuestionStates.entering_answer, F.data == "answers_done"
 )
 async def on_q_answers_done(call: CallbackQuery, state: FSMContext) -> None:
-    """Завершити введення варіантів — обрати правильний."""
     data = await state.get_data()
     answers: list[str] = list(data.get("answers", []))
     if len(answers) < MIN_ANSWER_OPTIONS:
@@ -509,7 +485,6 @@ async def on_q_answers_done(call: CallbackQuery, state: FSMContext) -> None:
     AddQuestionStates.picking_correct, F.data.startswith("correct:")
 )
 async def on_q_correct(call: CallbackQuery, state: FSMContext) -> None:
-    """Зафіксувати правильний варіант і зберегти питання."""
     if call.data is None:
         return
     correct_index = int(call.data.split(":", 1)[1])
@@ -543,7 +518,6 @@ async def on_q_correct(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.callback_query(F.data == CB_Q_LIST)
 async def cb_q_list(call: CallbackQuery) -> None:
-    """Обрати дисципліну для перегляду її питань."""
     if not await _guard(call):
         return
     async with async_session() as session:
@@ -561,7 +535,6 @@ async def cb_q_list(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data.startswith("q_list_disc:"))
 async def cb_q_list_disc(call: CallbackQuery) -> None:
-    """Показати першу сторінку питань дисципліни."""
     if call.data is None:
         return
     discipline_id = int(call.data.split(":", 1)[1])
@@ -570,7 +543,6 @@ async def cb_q_list_disc(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data.startswith("q_page:"))
 async def cb_q_page(call: CallbackQuery) -> None:
-    """Перейти на іншу сторінку списку питань."""
     if call.data is None:
         return
     _, disc_raw, page_raw = call.data.split(":")
@@ -580,7 +552,6 @@ async def cb_q_page(call: CallbackQuery) -> None:
 async def _render_questions_page(
     call: CallbackQuery, discipline_id: int, page: int
 ) -> None:
-    """Внутрішня функція рендеру сторінки питань."""
     if not await _guard(call):
         return
     async with async_session() as session:
@@ -615,7 +586,6 @@ async def _render_questions_page(
 
 @router.callback_query(F.data.startswith("q_view:"))
 async def cb_q_view(call: CallbackQuery) -> None:
-    """Показати повний текст питання."""
     if not await _guard(call):
         return
     if call.data is None:
@@ -637,7 +607,6 @@ async def cb_q_view(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data.startswith("q_edit:"))
 async def cb_q_edit(call: CallbackQuery, state: FSMContext) -> None:
-    """Запросити новий текст питання."""
     if not await _guard(call):
         return
     if call.data is None:
@@ -652,7 +621,6 @@ async def cb_q_edit(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.message(EditQuestionStates.entering_new_text)
 async def on_q_edit_text(message: Message, state: FSMContext) -> None:
-    """Оновити текст питання."""
     result = validate_question_text(message.text or "")
     if not result.is_valid:
         await message.answer(f"{result.error}\nСпробуйте ще раз:")
@@ -670,7 +638,6 @@ async def on_q_edit_text(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data.startswith("q_del:"))
 async def cb_q_del(call: CallbackQuery) -> None:
-    """Запит підтвердження видалення питання."""
     if not await _guard(call):
         return
     if call.data is None:
@@ -688,7 +655,6 @@ async def cb_q_del(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data.startswith("q_del_yes:"))
 async def cb_q_del_yes(call: CallbackQuery) -> None:
-    """Підтвердити видалення питання."""
     if not await _guard(call):
         return
     if call.data is None:
@@ -710,7 +676,6 @@ async def cb_q_del_yes(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data == "q_del_no")
 async def cb_q_del_no(call: CallbackQuery) -> None:
-    """Скасувати видалення питання."""
     await call.answer("Скасовано")
     if call.message:
         await call.message.edit_text("Скасовано.")
@@ -718,5 +683,4 @@ async def cb_q_del_no(call: CallbackQuery) -> None:
 
 @router.callback_query(F.data == "noop")
 async def cb_noop(call: CallbackQuery) -> None:
-    """Заглушка для неінтерактивних кнопок (наприклад, лічильник сторінок)."""
     await call.answer()

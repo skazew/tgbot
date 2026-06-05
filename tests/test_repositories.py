@@ -11,7 +11,6 @@ from database.repositories import (
 
 
 class TestUserRepository:
-    """Перевірка get_or_create і пошуку."""
 
     async def test_get_or_create_creates_new(self, session) -> None:
         repo = UserRepository(session)
@@ -48,7 +47,6 @@ class TestUserRepository:
 
 
 class TestDisciplineRepository:
-    """Перевірка створення і отримання списку активних."""
 
     async def test_create_and_get_by_name(self, session) -> None:
         repo = DisciplineRepository(session)
@@ -70,7 +68,6 @@ class TestDisciplineRepository:
 
 
 class TestQuestionRepository:
-    """Перевірка збереження питань з варіантами і їх вибірки."""
 
     async def test_create_with_answers_and_selectinload(self, session) -> None:
         disc = await DisciplineRepository(session).create("D", None)

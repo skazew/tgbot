@@ -21,7 +21,6 @@ _config = load_config()
 
 @router.message()
 async def fallback_message(message: Message) -> None:
-    """Підказати користувачу, як користуватися ботом."""
     logger.info(
         "Невпізнане повідомлення від tg=%s (тип=%s): %r",
         message.from_user.id if message.from_user else "?",
@@ -38,7 +37,6 @@ async def fallback_message(message: Message) -> None:
 
 @router.callback_query()
 async def fallback_callback(callback: CallbackQuery) -> None:
-    """Відповісти на застаріле/невпізнане натискання inline-кнопки."""
     logger.info(
         "Невпізнане натискання від tg=%s: data=%r",
         callback.from_user.id if callback.from_user else "?",

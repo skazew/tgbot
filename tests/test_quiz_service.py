@@ -8,7 +8,6 @@ from services.quiz_service import calculate_percentage, select_questions
 
 
 class TestCalculatePercentage:
-    """Перевірка обрахунку відсотків."""
 
     def test_normal(self) -> None:
         assert calculate_percentage(5, 10) == 50.0
@@ -28,12 +27,10 @@ class TestCalculatePercentage:
 
 
 def _make_pool(n: int) -> list[Question]:
-    """Створити фейковий пул питань."""
     return [Question(id=i, discipline_id=1, text=f"q{i}", difficulty=1) for i in range(1, n + 1)]
 
 
 class TestSelectQuestions:
-    """Перевірка вибірки питань."""
 
     def test_limit_respected(self) -> None:
         pool = _make_pool(20)
@@ -50,7 +47,6 @@ class TestSelectQuestions:
         assert select_questions(_make_pool(5), limit=0) == []
 
     def test_randomness_across_runs(self) -> None:
-        """Серед кількох прогонів повинні зʼявитися різні комбінації."""
         pool = _make_pool(50)
         seen_orders: set[tuple[int, ...]] = set()
         for _ in range(20):

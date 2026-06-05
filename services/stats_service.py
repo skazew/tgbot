@@ -13,7 +13,6 @@ from services.quiz_service import calculate_percentage
 
 @dataclass
 class UserStats:
-    """Зведена статистика користувача."""
 
     attempts_count: int
     average_percentage: float
@@ -23,7 +22,6 @@ class UserStats:
 
 @dataclass
 class GlobalStats:
-    """Зведена статистика по всіх користувачах."""
 
     total_attempts: int
     most_active_full_name: str | None
@@ -33,7 +31,6 @@ class GlobalStats:
 
 
 async def build_user_stats(session: AsyncSession, user_id: int) -> UserStats:
-    """Зібрати статистику для конкретного користувача."""
     repo = AttemptRepository(session)
     return UserStats(
         attempts_count=await repo.count_user_attempts(user_id),
@@ -44,7 +41,6 @@ async def build_user_stats(session: AsyncSession, user_id: int) -> UserStats:
 
 
 async def build_global_stats(session: AsyncSession) -> GlobalStats:
-    """Зібрати глобальну статистику для адміністратора."""
     repo = AttemptRepository(session)
     total = await repo.total_count()
     active = await repo.most_active_user()
@@ -59,7 +55,6 @@ async def build_global_stats(session: AsyncSession) -> GlobalStats:
 
 
 def format_user_stats(stats: UserStats) -> str:
-    """Сформувати HTML-текст статистики користувача."""
     if stats.attempts_count == 0:
         return (
             "<b>Ваша статистика</b>\n"
@@ -84,7 +79,6 @@ def format_user_stats(stats: UserStats) -> str:
 
 
 def format_global_stats(stats: GlobalStats) -> str:
-    """Сформувати HTML-текст зведеної статистики."""
     if stats.total_attempts == 0:
         return "<b>Загальна статистика</b>\nЩе немає жодного проходження."
     lines = [

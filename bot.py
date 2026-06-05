@@ -21,7 +21,6 @@ from handlers import stats as stats_handlers
 
 
 def setup_logging(level_name: str) -> None:
-    """Налаштувати логування у файл і stdout."""
     level = getattr(logging, level_name.upper(), logging.INFO)
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -34,7 +33,6 @@ def setup_logging(level_name: str) -> None:
 
 
 async def on_error(event: ErrorEvent) -> bool:
-    """Глобальний error handler: логувати traceback, не показувати його користувачу."""
     logger = logging.getLogger("error")
     logger.exception("Необроблена помилка: %s", event.exception)
     update = event.update
@@ -54,7 +52,6 @@ async def on_error(event: ErrorEvent) -> bool:
 
 
 async def main() -> None:
-    """Точка входу: ініціалізувати застосунок і запустити polling."""
     config = load_config()
     setup_logging(config.log_level)
     logger = logging.getLogger("bot")

@@ -23,7 +23,6 @@ from database.models import Base  # noqa: E402
 
 @pytest_asyncio.fixture
 async def session() -> AsyncIterator[AsyncSession]:
-    """Створити чисту in-memory БД на кожен тест."""
     engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -35,5 +34,4 @@ async def session() -> AsyncIterator[AsyncSession]:
 
 @pytest.fixture
 def anyio_backend() -> str:
-    """Бекенд для anyio (для сумісності)."""
     return "asyncio"

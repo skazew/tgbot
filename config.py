@@ -10,7 +10,6 @@ load_dotenv()
 
 
 def _parse_admin_ids(raw: str) -> list[int]:
-    """Парсити рядок ADMIN_IDS у список цілих чисел."""
     if not raw:
         return []
     result: list[int] = []
@@ -23,7 +22,6 @@ def _parse_admin_ids(raw: str) -> list[int]:
 
 @dataclass(frozen=True)
 class Config:
-    """Контейнер конфігурації застосунку."""
 
     bot_token: str
     database_url: str
@@ -33,7 +31,6 @@ class Config:
 
 
 def load_config() -> Config:
-    """Зібрати конфігурацію з оточення."""
     return Config(
         bot_token=os.getenv("BOT_TOKEN", ""),
         database_url=os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./quiz_bot.db"),

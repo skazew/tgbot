@@ -39,7 +39,6 @@ CB_QUIZ_BACK = "quiz_back_sec"
 @router.message(Command("quiz"))
 @router.message(F.text == BTN_QUIZ)
 async def cmd_quiz(message: Message, state: FSMContext) -> None:
-    """Показати список розділів вікторини."""
     await state.set_state(QuizStates.choosing_section)
     await message.answer(
         "Оберіть розділ:",
@@ -51,7 +50,6 @@ async def cmd_quiz(message: Message, state: FSMContext) -> None:
     QuizStates.choosing_section, F.data.startswith(f"{CB_QUIZ_SEC}:")
 )
 async def on_section_chosen(call: CallbackQuery, state: FSMContext) -> None:
-    """Користувач обрав розділ — показати дисципліни цього розділу."""
     if call.data is None or call.message is None:
         await call.answer()
         return
@@ -89,7 +87,6 @@ async def on_section_chosen(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.callback_query(QuizStates.choosing_discipline, F.data == CB_QUIZ_BACK)
 async def on_back_to_sections(call: CallbackQuery, state: FSMContext) -> None:
-    """Повернутися від списку дисциплін до списку розділів."""
     if call.message is None:
         await call.answer()
         return
@@ -102,7 +99,6 @@ async def on_back_to_sections(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.callback_query(QuizStates.choosing_discipline, F.data.startswith(f"{CB_QUIZ_DISC}:"))
 async def on_discipline_chosen(call: CallbackQuery, state: FSMContext) -> None:
-    """Користувач обрав дисципліну — підготувати питання і надіслати перше."""
     if call.data is None or call.message is None or call.from_user is None:
         await call.answer()
         return
@@ -149,7 +145,6 @@ async def on_discipline_chosen(call: CallbackQuery, state: FSMContext) -> None:
 
 
 async def _send_question(call: CallbackQuery, state: FSMContext) -> None:
-    """Надіслати поточне питання користувачу."""
     if call.message is None:
         return
     data = await state.get_data()
@@ -176,7 +171,6 @@ async def _send_question(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.callback_query(QuizStates.answering_question, F.data.startswith("answer:"))
 async def on_answer(call: CallbackQuery, state: FSMContext) -> None:
-    """Обробити вибір варіанта відповіді."""
     if call.data is None or call.message is None or call.from_user is None:
         await call.answer()
         return
@@ -224,7 +218,6 @@ async def on_answer(call: CallbackQuery, state: FSMContext) -> None:
 
 
 async def _finish_quiz(call: CallbackQuery, state: FSMContext) -> None:
-    """Зафіксувати спробу у БД і повідомити підсумок."""
     if call.message is None or call.from_user is None:
         return
     data = await state.get_data()

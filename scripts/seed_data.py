@@ -992,7 +992,6 @@ SEED_DATA: list[tuple[str, str, list[SeedQuestion]]] = [
 
 
 async def seed() -> None:
-    """Заповнити БД тестовими даними (ідемпотентно)."""
     await init_db()
     async with async_session() as session:
         disc_repo = DisciplineRepository(session)

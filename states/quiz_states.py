@@ -5,7 +5,6 @@ from aiogram.fsm.state import State, StatesGroup
 
 
 class QuizStates(StatesGroup):
-    """Стани проходження вікторини."""
 
     choosing_section = State()
     choosing_discipline = State()

@@ -21,6 +21,5 @@ async_session: async_sessionmaker[AsyncSession] = async_sessionmaker(
 
 
 async def init_db() -> None:
-    """Створити всі таблиці, якщо вони ще не існують."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

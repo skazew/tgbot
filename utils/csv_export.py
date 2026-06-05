@@ -20,7 +20,6 @@ CSV_HEADERS = [
 
 
 def build_attempts_csv(attempts: Iterable[Attempt]) -> bytes:
-    """Сформувати CSV-вміст із переліку спроб у вигляді байтів (UTF-8 BOM)."""
     buffer = io.StringIO()
     writer = csv.writer(buffer, delimiter=";")
     writer.writerow(CSV_HEADERS)

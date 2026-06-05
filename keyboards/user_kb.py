@@ -18,7 +18,6 @@ BTN_ADMIN = "⚙️ Адміністрування"
 
 
 def main_menu(is_admin: bool = False) -> ReplyKeyboardMarkup:
-    """Головне reply-меню. Якщо адмін — додає кнопку адміністрування."""
     rows = [
         [KeyboardButton(text=BTN_QUIZ)],
         [KeyboardButton(text=BTN_STATS), KeyboardButton(text=BTN_RATING)],
@@ -69,7 +68,6 @@ SECTIONS: list[tuple[str, str, list[str]]] = [
 
 
 def get_section(key: str) -> tuple[str, list[str]] | None:
-    """Повернути (заголовок, список назв дисциплін) розділу за ключем."""
     for k, title, names in SECTIONS:
         if k == key:
             return title, names
@@ -77,7 +75,6 @@ def get_section(key: str) -> tuple[str, list[str]] | None:
 
 
 def sections_kb(prefix: str) -> InlineKeyboardMarkup:
-    """Inline-клавіатура зі списком розділів; callback_data = `{prefix}:{key}`."""
     rows = [
         [InlineKeyboardButton(text=title, callback_data=f"{prefix}:{key}")]
         for key, title, _ in SECTIONS
@@ -88,7 +85,6 @@ def sections_kb(prefix: str) -> InlineKeyboardMarkup:
 def disciplines_kb(
     disciplines: list[Discipline], prefix: str
 ) -> InlineKeyboardMarkup:
-    """Inline-клавіатура зі списком дисциплін; callback_data = `{prefix}:{id}`."""
     rows = [
         [InlineKeyboardButton(text=d.name, callback_data=f"{prefix}:{d.id}")]
         for d in disciplines
@@ -102,7 +98,6 @@ def disciplines_in_section_kb(
     disc_prefix: str,
     back_callback: str,
 ) -> InlineKeyboardMarkup:
-    """Дисципліни розділу + кнопка «Назад до розділів»."""
     section = get_section(section_key)
     name_set: set[str] = set(section[1]) if section else set()
     filtered = [d for d in disciplines if d.name in name_set]
@@ -117,7 +112,6 @@ def disciplines_in_section_kb(
 
 
 def answers_kb(question_id: int, answers: list[Answer]) -> InlineKeyboardMarkup:
-    """Inline-клавіатура з варіантами відповідей на питання."""
     rows = [
         [
             InlineKeyboardButton(

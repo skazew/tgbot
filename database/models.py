@@ -21,7 +21,6 @@ class Base(DeclarativeBase):
 
 
 class User(Base):
-    """Користувач Telegram, зареєстрований у боті."""
 
     __tablename__ = "users"
 
@@ -40,7 +39,6 @@ class User(Base):
 
 
 class Discipline(Base):
-    """Дисципліна (категорія) питань."""
 
     __tablename__ = "disciplines"
 
@@ -58,7 +56,6 @@ class Discipline(Base):
 
 
 class Question(Base):
-    """Питання вікторини, прив'язане до дисципліни."""
 
     __tablename__ = "questions"
 
@@ -76,7 +73,6 @@ class Question(Base):
 
 
 class Answer(Base):
-    """Варіант відповіді на питання."""
 
     __tablename__ = "answers"
 
@@ -91,7 +87,6 @@ class Answer(Base):
 
 
 class Attempt(Base):
-    """Спроба проходження вікторини користувачем."""
 
     __tablename__ = "attempts"
 
